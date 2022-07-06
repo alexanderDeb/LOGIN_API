@@ -6,7 +6,6 @@ Esta es una api desarrollada en Django rest framework, esta es un loguin que tie
 
 {
     "password": "",
-    "last_login": null,
     "is_superuser": false,
     "username": "",
     "first_name": "",
@@ -14,7 +13,6 @@ Esta es una api desarrollada en Django rest framework, esta es un loguin que tie
     "email": "",
     "is_staff": false,
     "is_active": false,
-    "date_joined": null,
     "groups": [],
     "user_permissions": []
 }
