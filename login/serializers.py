@@ -1,10 +1,17 @@
-from dataclasses import fields
-from pyexpat import model
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
+from login.models import User
 
 
-class userSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = get_user_model()
+        model = User
         fields = '__all__'
+        
+        
+
+    def create(self,validated_data):
+        user = User(**validated_data)
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
+

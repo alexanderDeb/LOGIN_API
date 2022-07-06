@@ -1,12 +1,11 @@
-from rest_framework import viewsets
+from rest_framework import viewsets,permissions
 from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth import get_user_model
-from rest_framework import permissions
+from login.models import User
 
-from .serializers import userSerializer
+from .serializers import UserSerializer
 
 
 class userViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
-    serializer_class = userSerializer
-    queryset = get_user_model().objects.all()
+    serializer_class = UserSerializer
+    queryset = User.objects.all()

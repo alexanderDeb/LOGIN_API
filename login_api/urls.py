@@ -18,5 +18,4 @@ urlpatterns = [
 
 router = DefaultRouter()
 router.register('user', userViewSet, basename='user')
-
 urlpatterns += router.urls
