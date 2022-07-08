@@ -24,34 +24,33 @@ class userViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
 
 
-    # def send_email(destinatario, subject):
+    def send_email(destinatario, subject):
 
-    #     try:
-    #         mailServer = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
-    #         mailServer.ehlo()
-    #         mailServer.starttls()
-    #         mailServer.ehlo()
-    #         mailServer.login(settings.EMAIL_HOST_USER,settings.EMAIL_HOST_PASSWORD)
+        try:
+            mailServer = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+            mailServer.ehlo()
+            mailServer.starttls()
+            mailServer.ehlo()
+            mailServer.login(settings.EMAIL_HOST_USER,settings.EMAIL_HOST_PASSWORD)
 
-    #         # Construimos el mensaje simple
-    #         mensaje = MIMEMultipart()
-    #         mensaje['From'] = settings.EMAIL_HOST_USER
-    #         mensaje['To'] = destinatario
-    #         mensaje['Subject'] = subject
+            # Construimos el mensaje simple
+            mensaje = MIMEMultipart()
+            mensaje['From'] = settings.EMAIL_HOST_USER
+            mensaje['To'] = destinatario
+            mensaje['Subject'] = subject
 
-    #         content = render_to_string('send_email.html')
-    #         mensaje.attach(MIMEText(content, 'html'))
+            content = render_to_string('send_email.html')
+            mensaje.attach(MIMEText(content, 'html'))
 
-    #         # Envio del mensaje
-    #         mailServer.sendmail(settings.EMAIL_HOST_USER,destinatario, mensaje.as_string())
-    #         print('Todo es correcto')
+            # Envio del mensaje
+            mailServer.sendmail(settings.EMAIL_HOST_USER,destinatario, mensaje.as_string())
+            print('Todo es correcto')
 
-    #     except Exception as e:
-    #         print('entro al except')
-    #         print(e)
+        except Exception as e:
+            print('entro al except')
+            print(e)
 
 
-    # send_email('alexcs252002@gmail.com','Correo de recuperacion de datos')
 
 
 class UserRegisterAPIView(generics.CreateAPIView):
