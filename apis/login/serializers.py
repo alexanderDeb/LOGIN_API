@@ -8,7 +8,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id','password','username','email','name','last_name']
+        fields = ['id','password','username','email','name','last_name','groups','is_superuser']
         
     def create(self,validated_data):
         user = User(**validated_data)

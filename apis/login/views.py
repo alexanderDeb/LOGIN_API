@@ -1,6 +1,7 @@
 #------------------------------Dependencias para Correo de recuperacion---------------------------#
 
 from email.mime.multipart import MIMEMultipart
+from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 from email.mime.text import MIMEText
 import smtplib
@@ -19,14 +20,20 @@ from rest_framework import generics
 from rest_framework.generics import GenericAPIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
+#----------------------------------------------EXPIRED---------------------------------------------#
+
+from django.http import HttpResponseRedirect
+from datetime import datetime
+
+
 #---------------------------------------------GENERAL----------------------------------------------#
 
 from apis.login.models import User
-
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import UserSerializer
 from .serializers import CustomTokenObtainPairSerializer
 from django.contrib.auth import authenticate
+from requests import request
 
 
 
@@ -118,4 +125,5 @@ class Logout(GenericAPIView):
             return Response({'message': 'Sesión cerrada correctamente.'}, status=status.HTTP_200_OK)
         return Response({'error': 'No existe este usuario.'}, status=status.HTTP_400_BAD_REQUEST)
 
-#-----------------------------------------------------------------------------------------------------#
+#------------------------------------------------AFK------------------------------------------------#
+
