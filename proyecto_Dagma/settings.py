@@ -91,13 +91,16 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
-EMAIL_HOST = 'smtp.gmail.com'
+
+EMAIL_HOST = 'smtp.emcali.net.co'
 
 EMAIL_PORT = 587
 
-EMAIL_HOST_USER = 'jhon.carvajal01@unicatolica.edu.co'
+EMAIL_HOST_USER = 'sensorescomuna22@emcali.net.co'
 
-EMAIL_HOST_PASSWORD = 'J25.carS'
+EMAIL_HOST_PASSWORD = 'Emcali2022*'
+
+DOMAIN = ''
 
 
 MIDDLEWARE = [

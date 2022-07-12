@@ -1,7 +1,7 @@
 #------------------------------Dependencias para Correo de recuperacion---------------------------#
 
 from email.mime.multipart import MIMEMultipart
-from django.http import HttpResponseRedirect
+import uuid
 from django.template.loader import render_to_string
 from email.mime.text import MIMEText
 import smtplib
@@ -20,12 +20,6 @@ from rest_framework import generics
 from rest_framework.generics import GenericAPIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-#----------------------------------------------EXPIRED---------------------------------------------#
-
-from django.http import HttpResponseRedirect
-from datetime import datetime
-
-
 #---------------------------------------------GENERAL----------------------------------------------#
 
 from apis.login.models import User
@@ -33,7 +27,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import UserSerializer
 from .serializers import CustomTokenObtainPairSerializer
 from django.contrib.auth import authenticate
-from requests import request
+from requests import post, request
 
 
 
@@ -47,32 +41,56 @@ class userViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
 
 #------------------------------------Correo de recuperacion------------------------------------#
+class Recovery_password(GenericAPIView):
 
-def send_email(destinatario, subject):
+    queryset = User.objects.all()
+    permission_classes = [permissions.AllowAny]
 
-    try:
-        mailServer = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
-        mailServer.ehlo()
-        mailServer.starttls()
-        mailServer.ehlo()
-        mailServer.login(settings.EMAIL_HOST_USER,settings.EMAIL_HOST_PASSWORD)
+    def send_email_reset_pwd(self, user): 
+        data = {}
+        try:
+            
+            URL = settings.DOMAIN if not settings.DEBUG else self.request.META['HTTP_HOST']
+            user.token = uuid.uuid4
+            user.save()
+            
+            mailServer = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+            mailServer.ehlo()
+            mailServer.starttls()
+            mailServer.ehlo()
+            mailServer.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+            
+            #construimos el mensaje simple
+            email_to = user.email 
+            mensaje = MIMEMultipart()
+            mensaje['From'] = settings.EMAIL_HOST_USER
+            mensaje['To'] = email_to
+            mensaje['Subject'] = 'Reseteo de contraseña'
+            
+            content = render_to_string('send_email.html', {
+                'user': user,
+                'link_resetpwd': 'http://{}/change/password/{}/'.format(URL, str(user.token)),
+                'link_home': 'http://{}'.format(URL)
+            })
+            mensaje.attach(MIMEText(content, 'html'))
+            
+            # Envio del mensaje
+            mailServer.sendmail(settings.EMAIL_HOST_USER,email_to,mensaje.as_string())
 
-        # Construimos el mensaje simple
-        mensaje = MIMEMultipart()
-        mensaje['From'] = settings.EMAIL_HOST_USER
-        mensaje['To'] = destinatario
-        mensaje['Subject'] = subject
+        except Exception as e:
+            data['error'] = str(e)
+            print("No sirvio")
+        return data
 
-        content = render_to_string('send_email.html')
-        mensaje.attach(MIMEText(content, 'html'))
-
-        # Envio del mensaje
-        mailServer.sendmail(settings.EMAIL_HOST_USER,destinatario, mensaje.as_string())
-        print('Todo es correcto')
-
-    except Exception as e:
-        print('entro al except')
-        print(e)
+    def post(self, request, *args, **kwargs):
+        print(request.data['email'])
+        try:
+            user = User.objects.get(email=request.data['email'])
+            print (user)
+            self.send_email_reset_pwd(user)
+            return Response({'message' : 'Se ha enviado email'}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({'error': 'email no enviado'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 #-------------------------------------Vista principal para registro---------------------------------#
