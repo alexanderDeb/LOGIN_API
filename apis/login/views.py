@@ -29,7 +29,9 @@ from .serializers import CustomTokenObtainPairSerializer
 from django.contrib.auth import authenticate
 from requests import post, request
 
+#-----------------------------------------------GROUPS----------------------------------------------#
 
+from .serializers import GroupSerializer
 
 # - - - - - - - - - - - - - - - - - - - - - - - VIEWS - - - - - - - - - - - -  - - - - - - - - #
 
@@ -103,8 +105,8 @@ class UserRegisterAPIView(generics.CreateAPIView):
         serializer = self.serializer_class(data = request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "creamos melosos"},status=status.HTTP_200_OK)
-        return Response({'message':"paila mi so"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Se creo el usuario"},status=status.HTTP_200_OK)
+        return Response({'message':"No se creo el usuario"}, status=status.HTTP_400_BAD_REQUEST)
 
 #----------------------------------------------LOGIN--------------------------------------------#
 
@@ -143,5 +145,15 @@ class Logout(GenericAPIView):
             return Response({'message': 'Sesión cerrada correctamente.'}, status=status.HTTP_200_OK)
         return Response({'error': 'No existe este usuario.'}, status=status.HTTP_400_BAD_REQUEST)
 
-#------------------------------------------------AFK------------------------------------------------#
+#------------------------------------------------GROUPS------------------------------------------------#
 
+class GoupsRegisterAPIView(generics.CreateAPIView):
+    serializer_class = GroupSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        serializer = self.serializer_class(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Se creo el grupo con exito"},status=status.HTTP_200_OK)
+        return Response({'message':"No fue posible crear el grupo"}, status=status.HTTP_400_BAD_REQUEST)

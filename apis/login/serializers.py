@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from apis.login.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.contrib.auth.models import Group
+
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     pass
@@ -15,3 +17,11 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+
+
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = ['name','permissions']
+

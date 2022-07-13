@@ -45,3 +45,4 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def _str_(self):
         return f'{self.name} {self.last_name}'
+
